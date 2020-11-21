@@ -6,16 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import projects.portfoliodemo.exception.UserAlreadyExistsException;
 import projects.portfoliodemo.service.UserService;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
 import javax.validation.Valid;
 
-@Controller @Slf4j @RequiredArgsConstructor
-@RequestMapping("/register")
+@Controller @RequestMapping("/register")
+@Slf4j @RequiredArgsConstructor
 public class RegistrationController {
 
     private final UserService userService;
@@ -40,8 +42,16 @@ public class RegistrationController {
             return "register/form";
         }
 
-        Long id = userService.create(registerUserCommand);
-        log.debug("Utworzono użytkownika o id = {}", id);
-        return "redirect:/login";
+        try {
+            Long id = userService.create(registerUserCommand);
+            log.debug("Utworzono użytkownika o id = {}", id);
+            return "redirect:/login";
+        } catch (UserAlreadyExistsException uaee) {
+            bindingResult.rejectValue("username", null, "Użytkownik o podanej nazwie już istnieje");
+            return "register/form";
+        } catch (RuntimeException re) {
+            bindingResult.rejectValue(null, null, "Wystąpił błąd");
+            return "register/form";
+        }
     }
 }

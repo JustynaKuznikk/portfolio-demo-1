@@ -29,6 +29,7 @@
                 <div>
                     <button type="submit">Zarejestruj</button>
                 </div>
+                <div th:if="${#fields.hasGlobalErrors()}" th:value="${#fields.globalErrors()}"></div>
             </fieldset>
         </form>
     </div>
