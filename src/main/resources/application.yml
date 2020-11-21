@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: portfolio-demo
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+logging:
+  level:
+    root: INFO
+    sql: DEBUG
+    projects.portfoliodemo: DEBUG
