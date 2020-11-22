@@ -14,9 +14,9 @@ import projects.portfoliodemo.web.command.CreateProjectCommand;
 @RequiredArgsConstructor
 public class AddNewProjectController {
 
-    @GetMapping
+    @GetMapping("/add")
     public String getAddProjectPage(Model model) {
         model.addAttribute(new CreateProjectCommand());
-        return "projects/add";
+        return "project/add";
     }
 }
