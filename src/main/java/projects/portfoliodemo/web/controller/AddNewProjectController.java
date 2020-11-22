@@ -27,7 +27,7 @@ public class AddNewProjectController {
         return "project/add";
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public String processAddProject(@Valid CreateProjectCommand createProjectCommand, BindingResult bindings) {
         log.debug("Dane do utworzenia projektu: {}", createProjectCommand);
         if (bindings.hasErrors()) {
