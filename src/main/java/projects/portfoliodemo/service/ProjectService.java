@@ -6,11 +6,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projects.portfoliodemo.converter.ProjectConverter;
+import projects.portfoliodemo.data.project.ProjectSummary;
 import projects.portfoliodemo.domain.model.Project;
 import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.domain.repository.ProjectRepository;
 import projects.portfoliodemo.domain.repository.UserRepository;
 import projects.portfoliodemo.web.command.CreateProjectCommand;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -37,5 +41,15 @@ public class ProjectService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.getAuthenticatedUser(username);
         project.setUser(user);
+    }
+
+    @Transactional
+    public List<ProjectSummary> findUserProjects() {
+        log.debug("Pobieranie informacji o projektach użytkownika");
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return projectRepository.findAllByUserUsername(username).stream()
+                .map(projectConverter::toProjectSummary)
+                .collect(Collectors.toList());
     }
 }
