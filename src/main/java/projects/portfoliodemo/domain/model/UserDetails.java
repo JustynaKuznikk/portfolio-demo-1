@@ -24,7 +24,8 @@ public class UserDetails {
     private LocalDate birthDate;
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
-    @Column(insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false, name = "user_id")
     private Long userId;
 }
