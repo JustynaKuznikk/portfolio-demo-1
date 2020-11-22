@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import projects.portfoliodemo.data.user.UserSummary;
 import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.domain.model.UserDetails;
+import projects.portfoliodemo.web.command.EditUserCommand;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
 @Component
@@ -24,5 +25,13 @@ public class UserConverter {
                 .lastName(details.getLastName())
                 .birthDate(details.getBirthDate())
                 .build();
+    }
+
+    public User from(EditUserCommand editUserCommand, User user) {
+        UserDetails details = user.getDetails();
+        details.setFirstName(editUserCommand.getFirstName());
+        details.setLastName(editUserCommand.getLastName());
+        details.setBirthDate(editUserCommand.getBirthDate());
+        return user;
     }
 }

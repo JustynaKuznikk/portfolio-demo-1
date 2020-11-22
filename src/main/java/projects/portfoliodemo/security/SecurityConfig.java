@@ -29,11 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .authorizeRequests()
+                .authorizeRequests()
                 .mvcMatchers("/register").permitAll()
                 .mvcMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-            .formLogin();
+                .formLogin()
+                .defaultSuccessUrl("/profile", true);
     }
 }
