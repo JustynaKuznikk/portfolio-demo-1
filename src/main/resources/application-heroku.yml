@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: portfolio-demo
+  jpa:
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:h2:mem:portfolioDB
+
+logging:
+  level:
+    root: WARN
+    projects.portfoliodemo: DEBUG
+

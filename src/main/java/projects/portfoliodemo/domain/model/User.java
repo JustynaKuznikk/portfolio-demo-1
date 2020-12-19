@@ -21,6 +21,7 @@ public class User implements Serializable {
     private String username;
 
     private String password;
+    @Builder.Default
     private Boolean active = Boolean.FALSE;
 
     @ElementCollection(fetch = FetchType.EAGER)
