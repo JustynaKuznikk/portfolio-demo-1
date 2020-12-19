@@ -38,6 +38,15 @@ public class ProjectDataLoader implements DataLoader {
                     .build();
             projectRepository.save(dukeProject);
             log.debug("Saved project: {}", dukeProject);
+
+            Project hackerProject = Project.builder()
+                    .name("Hacker's Project")
+                    .description("Hacking everything")
+                    .url("http://followtheinstructions.com")
+                    .user(duke)
+                    .build();
+            projectRepository.save(hackerProject);
+            log.debug("Saved project: {}", hackerProject);
         }
     }
 }
