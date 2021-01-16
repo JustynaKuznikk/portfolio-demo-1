@@ -10,6 +10,8 @@ import projects.portfoliodemo.web.command.RegisterUserCommand;
 public class UserConverter {
 
     public User from(RegisterUserCommand registerUserCommand) {
+        if (registerUserCommand == null)
+            throw new UnconvertibleDataException("cannot convert from null");
         return User.builder()
                 .username(registerUserCommand.getUsername())
                 .password(registerUserCommand.getPassword())

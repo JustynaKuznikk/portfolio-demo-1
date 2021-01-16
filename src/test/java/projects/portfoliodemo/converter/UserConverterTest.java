@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("User converting specification")
 class UserConverterTest {
@@ -64,6 +63,20 @@ class UserConverterTest {
             assertThatActiveIsFalseByDefault(result);
             assertThatRolesAreEmptyByDefault(result);
         }
+
+        @DisplayName("- should raise an error when no data provided")
+        @Test
+        void test3() {
+            RegisterUserCommand command = null;
+
+            assertThrows(UnconvertibleDataException.class, () -> cut.from(command));
+
+            Assertions.assertThatThrownBy(() -> cut.from(command))
+                    .isInstanceOf(UnconvertibleDataException.class)
+                    .hasMessageMatching(".*cannot convert from null.*")
+                    .hasNoCause();
+        }
+
 
         private void assertThatActiveIsFalseByDefault(User result) {
             assertEquals(false, result.getActive());
