@@ -52,6 +52,15 @@ class UserConverterTest {
             // then
             assertThatProvidedValuesAreSet(result, "duke", "s3cr3t");
             assertThatNothingThanExpectedIsSet(result, "username", "password", "roles", "active");
+        }
+
+        @DisplayName("- should convert to user with default values set")
+        @Test
+        void test2() {
+            RegisterUserCommand command = registerUserCommand("any", "any");
+
+            User result = cut.from(command);
+
             assertThatActiveIsFalseByDefault(result);
             assertThatRolesAreEmptyByDefault(result);
         }
