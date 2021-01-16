@@ -24,7 +24,7 @@ public class UserService {
     @Transactional
     public Long create(RegisterUserCommand registerUserCommand) {
         User user = new User();
-        user.setId(1L);
+        userRepository.save(user);
         return user.getId();
     }
 
