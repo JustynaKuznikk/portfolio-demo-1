@@ -10,7 +10,10 @@ import projects.portfoliodemo.web.command.RegisterUserCommand;
 public class UserConverter {
 
     public User from(RegisterUserCommand registerUserCommand) {
-        return null;
+        return User.builder()
+                .username(registerUserCommand.getUsername())
+                .password(registerUserCommand.getPassword())
+                .build();
     }
 
     public User from(EditUserCommand editUserCommand, User user) {

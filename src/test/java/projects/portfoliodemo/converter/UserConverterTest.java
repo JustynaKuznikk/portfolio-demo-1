@@ -21,6 +21,13 @@ class UserConverterTest {
         cut = new UserConverter();
     }
 
+    static RegisterUserCommand registerUserCommand(String username, String password) {
+        RegisterUserCommand command = new RegisterUserCommand();
+        command.setUsername(username);
+        command.setPassword(password);
+        return command;
+    }
+
     /*
 
         1. Pierwszy test: test optymistyczny; standardowe użycie metody, w której wszystko działa
@@ -37,22 +44,36 @@ class UserConverterTest {
         @Test
         void test1() {
             // given
-            RegisterUserCommand command = new RegisterUserCommand();
-            command.setUsername("duke");
-            command.setPassword("s3cr3t");
+            RegisterUserCommand command = registerUserCommand("duke", "s3cr3t");
 
             // when
             User result = cut.from(command);
 
             // then
-            assertNotNull(result);
-            assertEquals("duke", result.getUsername());
-            assertEquals("s3cr3t", result.getPassword());
+            assertThatProvidedValuesAreSet(result, "duke", "s3cr3t");
+            assertThatNothingThanExpectedIsSet(result, "username", "password", "roles", "active");
+            assertThatActiveIsFalseByDefault(result);
+            assertThatRolesAreEmptyByDefault(result);
+        }
 
-            Assertions.assertThat(result)
-                    .hasAllNullFieldsOrPropertiesExcept("username", "password", "roles");
+        private void assertThatActiveIsFalseByDefault(User result) {
+            assertEquals(false, result.getActive());
+        }
+
+        private void assertThatRolesAreEmptyByDefault(User result) {
             Assertions.assertThat(result.getRoles())
                     .isEmpty();
+        }
+
+        private void assertThatProvidedValuesAreSet(User result, String username, String password) {
+            assertNotNull(result);
+            assertEquals(username, result.getUsername());
+            assertEquals(password, result.getPassword());
+        }
+
+        private void assertThatNothingThanExpectedIsSet(User result, String... properties) {
+            Assertions.assertThat(result)
+                    .hasAllNullFieldsOrPropertiesExcept(properties);
         }
 
     }

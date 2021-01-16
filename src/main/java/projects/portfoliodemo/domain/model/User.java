@@ -24,6 +24,7 @@ public class User implements Serializable {
     @Builder.Default
     private Boolean active = Boolean.FALSE;
 
+    @Builder.Default
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "users_roles",
