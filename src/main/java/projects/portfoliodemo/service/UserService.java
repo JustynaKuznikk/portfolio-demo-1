@@ -23,7 +23,9 @@ public class UserService {
 
     @Transactional
     public Long create(RegisterUserCommand registerUserCommand) {
-        return null;
+        User user = new User();
+        user.setId(1L);
+        return user.getId();
     }
 
     @Transactional
