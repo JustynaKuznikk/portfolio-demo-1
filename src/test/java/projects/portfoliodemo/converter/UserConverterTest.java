@@ -1,6 +1,5 @@
 package projects.portfoliodemo.converter;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,7 +7,10 @@ import org.junit.jupiter.api.Test;
 import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("User converting specification")
 class UserConverterTest {
@@ -67,23 +69,22 @@ class UserConverterTest {
         @DisplayName("- should raise an error when no data provided")
         @Test
         void test3() {
-            RegisterUserCommand command = null;
-
-            assertThrows(UnconvertibleDataException.class, () -> cut.from(command));
-
-            Assertions.assertThatThrownBy(() -> cut.from(command))
-                    .isInstanceOf(UnconvertibleDataException.class)
-                    .hasMessageMatching(".*cannot convert from null.*")
-                    .hasNoCause();
+            assertThatRaiseErrorWithMessage(null, UnconvertibleDataException.class, "Cannot convert from null");
         }
 
+        private void assertThatRaiseErrorWithMessage(RegisterUserCommand command, Class<? extends Exception> klass, String message) {
+            assertThatThrownBy(() -> cut.from(command))
+                    .isInstanceOf(klass)
+                    .hasMessageContaining(message)
+                    .hasNoCause();
+        }
 
         private void assertThatActiveIsFalseByDefault(User result) {
             assertEquals(false, result.getActive());
         }
 
         private void assertThatRolesAreEmptyByDefault(User result) {
-            Assertions.assertThat(result.getRoles())
+            assertThat(result.getRoles())
                     .isEmpty();
         }
 
@@ -94,7 +95,7 @@ class UserConverterTest {
         }
 
         private void assertThatNothingThanExpectedIsSet(User result, String... properties) {
-            Assertions.assertThat(result)
+            assertThat(result)
                     .hasAllNullFieldsOrPropertiesExcept(properties);
         }
 

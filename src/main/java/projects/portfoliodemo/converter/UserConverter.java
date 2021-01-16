@@ -6,12 +6,13 @@ import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.web.command.EditUserCommand;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
+import static projects.portfoliodemo.converter.ConverterUtils.requiredNotNull;
+
 @Component
 public class UserConverter {
 
     public User from(RegisterUserCommand registerUserCommand) {
-        if (registerUserCommand == null)
-            throw new UnconvertibleDataException("cannot convert from null");
+        requiredNotNull(registerUserCommand);
         return User.builder()
                 .username(registerUserCommand.getUsername())
                 .password(registerUserCommand.getPassword())
