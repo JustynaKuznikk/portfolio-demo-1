@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import projects.portfoliodemo.domain.model.User;
+import projects.portfoliodemo.provider.CommandProvider;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,13 +21,6 @@ class UserConverterTest {
     @BeforeEach
     void setUp() {
         cut = new UserConverter();
-    }
-
-    static RegisterUserCommand registerUserCommand(String username, String password) {
-        RegisterUserCommand command = new RegisterUserCommand();
-        command.setUsername(username);
-        command.setPassword(password);
-        return command;
     }
 
     /*
@@ -45,7 +39,7 @@ class UserConverterTest {
         @Test
         void test1() {
             // given
-            RegisterUserCommand command = registerUserCommand("duke", "s3cr3t");
+            RegisterUserCommand command = CommandProvider.registerUserCommand("duke", "s3cr3t");
 
             // when
             User result = cut.from(command);
@@ -58,7 +52,7 @@ class UserConverterTest {
         @DisplayName("- should convert to user with default values set")
         @Test
         void test2() {
-            RegisterUserCommand command = registerUserCommand("any", "any");
+            RegisterUserCommand command = CommandProvider.registerUserCommand("any", "any");
 
             User result = cut.from(command);
 
