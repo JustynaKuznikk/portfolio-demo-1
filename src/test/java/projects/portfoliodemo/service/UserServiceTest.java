@@ -1,14 +1,12 @@
 package projects.portfoliodemo.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import projects.portfoliodemo.converter.UserConverter;
@@ -16,6 +14,8 @@ import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.domain.repository.UserRepository;
 import projects.portfoliodemo.provider.CommandProvider;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
+
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +32,8 @@ class UserServiceTest {
     UserRepository userRepository;
     @Mock
     PasswordEncoder passwordEncoder;
+    @Captor
+    ArgumentCaptor<User> userCaptor;
 
     @InjectMocks
     UserService cut;
@@ -62,6 +64,26 @@ class UserServiceTest {
             verify(userRepository, times(1)).save(any(User.class));
 
             assertEquals(99L, result);
+        }
+
+        @DisplayName("- should save user with provided data")
+        @Test
+        void test2() {
+            RegisterUserCommand command = CommandProvider.registerUserCommand("duke", "pass");
+            User expectedToSave = User.builder()
+                    .username("duke")
+                    .password("pass")
+                    .active(false)
+                    .roles(new HashSet<>())
+                    .build();
+
+            cut.create(command);
+
+            Mockito.verify(userRepository, Mockito.atLeastOnce()).save(userCaptor.capture());
+            User savedUser = userCaptor.getValue();
+
+            Assertions.assertThat(savedUser)
+                    .isEqualToComparingOnlyGivenFields(expectedToSave, "username", "password", "active", "roles");
         }
 
     }

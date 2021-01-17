@@ -26,7 +26,7 @@ public class ProjectService {
     private final ProjectConverter projectConverter;
 
     @Transactional
-    public void add(CreateProjectCommand createProjectCommand) {
+    public Long add(CreateProjectCommand createProjectCommand) {
         log.debug("Dane do utworzenia projektu: {}", createProjectCommand);
 
         Project project = projectConverter.from(createProjectCommand);
@@ -35,6 +35,7 @@ public class ProjectService {
 
         projectRepository.save(project);
         log.debug("Zapisany projekt: {}", project);
+        return project.getId();
     }
 
     private void updateProjectWithUser(Project project) {
