@@ -83,7 +83,7 @@ class UserServiceTest {
 
             Assertions.assertThatThrownBy(() -> cut.create(command))
                     .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("user with same username already exists")
+                    .hasMessageContaining("User with same username already exists")
                     .hasMessageNotContaining("joe")
                     .hasNoCause();
 

@@ -24,6 +24,9 @@ public class UserService {
     @Transactional
     public Long create(RegisterUserCommand registerUserCommand) {
         User user = userConverter.from(registerUserCommand);
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalStateException("User with same username already exists");
+        }
         user.setActive(true);
         user.getRoles().add("ROLE_USER");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
