@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import projects.portfoliodemo.converter.UnconvertibleDataException;
 import projects.portfoliodemo.converter.UserConverter;
 import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.domain.repository.UserRepository;
@@ -89,8 +90,16 @@ class UserServiceTest {
 
             Mockito.verifyNoInteractions(passwordEncoder);
             Mockito.verifyNoMoreInteractions(userRepository);
+        }
 
+        @DisplayName("- should propagate error when command is unconvertible")
+        @Test
+        void test3() {
+            UnconvertibleDataException exception = new UnconvertibleDataException("Cannot convert from null");
+            Mockito.when(userConverter.from(null)).thenThrow(exception);
 
+            Assertions.assertThatThrownBy(() -> cut.create(null))
+                    .isEqualTo(exception);
         }
     }
 
