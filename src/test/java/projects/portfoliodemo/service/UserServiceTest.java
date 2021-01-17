@@ -50,6 +50,7 @@ class UserServiceTest {
         @DisplayName("- should save user and return they id")
         @Test
         void test1() {
+            Mockito.when(userConverter.from(any(RegisterUserCommand.class))).thenReturn(new User());
             Mockito.when(userRepository.save(ArgumentMatchers.any(User.class)))
                     .thenAnswer(invocation -> {
                         User userToSave = invocation.getArgument(0, User.class);
@@ -76,6 +77,8 @@ class UserServiceTest {
                     .active(false)
                     .roles(new HashSet<>())
                     .build();
+
+            Mockito.when(userConverter.from(command)).thenReturn(expectedToSave);
 
             cut.create(command);
 
