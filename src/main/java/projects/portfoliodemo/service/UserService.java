@@ -24,6 +24,9 @@ public class UserService {
     @Transactional
     public Long create(RegisterUserCommand registerUserCommand) {
         User user = userConverter.from(registerUserCommand);
+        user.setActive(true);
+        user.getRoles().add("ROLE_USER");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user.getId();
     }
