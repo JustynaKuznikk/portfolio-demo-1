@@ -1,10 +1,12 @@
 package projects.portfoliodemo.web.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,6 +36,11 @@ class RegistrationControllerTest {
     MockMvc mockMvc;
 
     String endpoint = "/register";
+
+    @BeforeEach
+    void setUp() {
+        Mockito.clearInvocations(userService);
+    }
 
     // MockMvcRequestBuilders -> do tworzenia żądań
     // MockMvc
@@ -68,12 +75,12 @@ class RegistrationControllerTest {
         @DisplayName("- should create user when data is correct")
         @Test
         void test1() throws Exception {
-            RegisterUserCommand command = CommandProvider.registerUserCommand("duke", "pass");
+            RegisterUserCommand command = CommandProvider.registerUserCommand("duke@mvc.pl", "pass");
             Mockito.when(userService.create(command)).thenReturn(22L);
 
             mockMvc.perform(MockMvcRequestBuilders.post(endpoint)
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .param("username", "duke")
+                    .param("username", "duke@mvc.pl")
                     .param("password", "pass")
                     .with(SecurityMockMvcRequestPostProcessors.anonymous())
                     .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -100,6 +107,9 @@ class RegistrationControllerTest {
                     .andExpect(MockMvcResultMatchers.view().name("registration/form"))
                     .andExpect(MockMvcResultMatchers.model().attributeExists("data"))
                     .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("data", "username", "password"));
+
+            Mockito.verify(userService, Mockito.never()).create(ArgumentMatchers.any());
+            Mockito.verifyNoInteractions(userService);
         }
 
     }
