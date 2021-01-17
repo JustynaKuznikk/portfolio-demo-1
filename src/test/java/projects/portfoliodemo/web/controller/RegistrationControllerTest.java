@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import projects.portfoliodemo.security.CustomUserDetailsService;
 import projects.portfoliodemo.service.UserService;
+import projects.portfoliodemo.web.command.RegisterUserCommand;
 
 @DisplayName("Web Registration Specification: /register")
 @WebMvcTest(RegistrationController.class)
@@ -37,6 +38,13 @@ class RegistrationControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("registration/form"));
+    }
+
+    @DisplayName("- should prepare model for registration view on GET request")
+    @Test
+    void test2() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(endpoint))
+                .andExpect(MockMvcResultMatchers.model().attribute("data", new RegisterUserCommand()));
     }
 
 
