@@ -15,12 +15,10 @@ import projects.portfoliodemo.domain.repository.UserRepository;
 import projects.portfoliodemo.provider.CommandProvider;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
-import java.util.HashSet;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @DisplayName("User processes specification")
 @ExtendWith(MockitoExtension.class)
@@ -74,8 +72,6 @@ class UserServiceTest {
             User expectedToSave = User.builder()
                     .username("duke")
                     .password("pass")
-                    .active(false)
-                    .roles(new HashSet<>())
                     .build();
 
             Mockito.when(userConverter.from(command)).thenReturn(expectedToSave);
@@ -86,7 +82,29 @@ class UserServiceTest {
             User savedUser = userCaptor.getValue();
 
             Assertions.assertThat(savedUser)
-                    .isEqualToComparingOnlyGivenFields(expectedToSave, "username", "password", "active", "roles");
+                    .isEqualToComparingOnlyGivenFields(expectedToSave, "username", "password");
+        }
+
+        @DisplayName("- should save user as active with user role and encoded password")
+        @Test
+        void test3() {
+            RegisterUserCommand command = CommandProvider.registerUserCommand("duke", "pass");
+            User expectedToSave = User.builder()
+                    .username("duke")
+                    .password("pass")
+                    .build();
+
+            Mockito.when(passwordEncoder.encode("pass")).thenReturn("encoded");
+            Mockito.when(userConverter.from(command)).thenReturn(expectedToSave);
+
+            cut.create(command);
+
+            Mockito.verify(userRepository, atLeastOnce()).save(userCaptor.capture());
+            User savedUser = userCaptor.getValue();
+
+            assertTrue(savedUser.getActive());
+            Assertions.assertThat(savedUser.getRoles()).containsOnly("ROLE_USER");
+            assertEquals("encoded", savedUser.getPassword());
         }
 
     }
