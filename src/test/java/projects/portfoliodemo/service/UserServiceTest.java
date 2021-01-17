@@ -101,6 +101,23 @@ class UserServiceTest {
             Assertions.assertThatThrownBy(() -> cut.create(null))
                     .isEqualTo(exception);
         }
+
+        @DisplayName("- should propagate error when cannot save")
+        @Test
+        void test4() {
+            RegisterUserCommand command = CommandProvider.registerUserCommand("joe-cannot-be-saved", "pass");
+            User user = User.builder().username("joe-cannot-be-saved").password("pass").build();
+
+            Mockito.when(userConverter.from(command)).thenReturn(user);
+            Mockito.when(userRepository.existsByUsername("joe-cannot-be-saved")).thenReturn(false);
+
+            RuntimeException ex = new RuntimeException(new RuntimeException());
+            Mockito.when(userRepository.save(ArgumentMatchers.any())).thenThrow(ex);
+
+            Assertions.assertThatThrownBy(() -> cut.create(command))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasCauseInstanceOf(RuntimeException.class);
+        }
     }
 
 

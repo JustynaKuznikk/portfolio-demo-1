@@ -11,6 +11,7 @@ import projects.portfoliodemo.domain.model.Project;
 import projects.portfoliodemo.domain.model.User;
 import projects.portfoliodemo.domain.repository.ProjectRepository;
 import projects.portfoliodemo.domain.repository.UserRepository;
+import projects.portfoliodemo.security.AuthenticatedUser;
 import projects.portfoliodemo.web.command.CreateProjectCommand;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ProjectConverter projectConverter;
+    private final AuthenticatedUser authenticatedUser;
 
     @Transactional
     public Long add(CreateProjectCommand createProjectCommand) {
@@ -39,7 +41,7 @@ public class ProjectService {
     }
 
     private void updateProjectWithUser(Project project) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = authenticatedUser.getUsername();
         User user = userRepository.getAuthenticatedUser(username);
         project.setUser(user);
     }
