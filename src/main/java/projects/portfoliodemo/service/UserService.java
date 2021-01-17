@@ -14,7 +14,8 @@ import projects.portfoliodemo.web.command.EditUserCommand;
 import projects.portfoliodemo.web.command.RegisterUserCommand;
 
 @Service
-@Slf4j @RequiredArgsConstructor
+@Slf4j
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserConverter userConverter;

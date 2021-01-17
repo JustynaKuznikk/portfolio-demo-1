@@ -53,6 +53,7 @@ class UserServiceTest {
                     .build();
 
             Mockito.when(userConverter.from(command)).thenReturn(convertedUser);
+            Mockito.when(userRepository.existsByUsername("duke")).thenReturn(false);
             Mockito.when(passwordEncoder.encode("pass")).thenReturn("encoded");
             Mockito.when(userRepository.save(userCaptor.capture()))
                     .thenAnswer(invocation -> {
