@@ -71,6 +71,27 @@ class UserServiceTest {
 
             assertEquals(99L, result);
         }
+
+        @DisplayName("- should raise an error when user with same username already exists")
+        @Test
+        void test2() {
+            RegisterUserCommand command = CommandProvider.registerUserCommand("joe", "pass");
+            User user = User.builder().username("joe").password("pass").build();
+
+            Mockito.when(userConverter.from(command)).thenReturn(user);
+            Mockito.when(userRepository.existsByUsername("joe")).thenReturn(true);
+
+            Assertions.assertThatThrownBy(() -> cut.create(command))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("user with same username already exists")
+                    .hasMessageNotContaining("joe")
+                    .hasNoCause();
+
+            Mockito.verifyNoInteractions(passwordEncoder);
+            Mockito.verifyNoMoreInteractions(userRepository);
+
+
+        }
     }
 
 
