@@ -3,6 +3,8 @@ package projects.portfoliodemo.web.controller;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -79,6 +81,25 @@ class RegistrationControllerTest {
                     .andExpect(MockMvcResultMatchers.redirectedUrl("/login"));
 
             Mockito.verify(userService, Mockito.times(1)).create(command);
+        }
+
+        @DisplayName("- should stay on registration view with errors for invalid data")
+        @ParameterizedTest
+        @CsvSource({
+                "null, pa",
+                ",",
+                "bob, abcdefghijklafaaga"})
+        void test2(String username, String password) throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.post(endpoint)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("username", username)
+                    .param("password", password)
+                    .with(SecurityMockMvcRequestPostProcessors.anonymous())
+                    .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.view().name("registration/form"))
+                    .andExpect(MockMvcResultMatchers.model().attributeExists("data"))
+                    .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("data", "username", "password"));
         }
 
     }
